@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- User Validation ---
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'photoURL', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             data.email == request.auth.token.email &&
+             data.displayName is string && data.displayName.size() <= 100 &&
+             data.photoURL is string && data.photoURL.size() <= 500 &&
+             data.createdAt == request.time;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      
+      allow update: if isOwner(userId) && (
+        // Action: Update location
+        (incoming().diff(existing()).affectedKeys().hasOnly(['lastLocation']) && 
+         incoming().lastLocation.lat is number && incoming().lastLocation.lng is number) ||
+        // Action: Update profile
+        (incoming().diff(existing()).affectedKeys().hasAll(['displayName', 'photoURL']) &&
+         incoming().diff(existing()).affectedKeys().size() == 2 &&
+         incoming().displayName is string && incoming().displayName.size() <= 100 &&
+         incoming().photoURL is string && incoming().photoURL.size() <= 500)
+      );
+    }
+
+    // --- Chat Validation ---
+    function isValidChat(data) {
+      return data.participants is list && data.participants.size() == 2 &&
+             request.auth.uid in data.participants;
+    }
+
+    match /chats/{chatId} {
+      allow get: if isSignedIn() && (request.auth.uid in existing().participants);
+      allow list: if isSignedIn() && (request.auth.uid in resource.data.participants);
+      
+      allow create: if isSignedIn() && isValidChat(incoming());
+      
+      allow update: if isSignedIn() && (request.auth.uid in existing().participants) &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['lastMessage', 'updatedAt']) &&
+                       incoming().updatedAt == request.time;
+    }
+
+    // --- Message Validation ---
+    function isValidMessage(data, chatId) {
+      return data.senderId == request.auth.uid &&
+             data.text is string && data.text.size() <= 1000 &&
+             data.createdAt == request.time;
+    }
+
+    match /chats/{chatId}/messages/{messageId} {
+      allow read: if isSignedIn() && (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants);
+      
+      allow create: if isSignedIn() && 
+                       (request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants) &&
+                       isValidMessage(incoming(), chatId);
+    }
+  }
+}
