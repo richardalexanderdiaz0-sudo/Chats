@@ -41,7 +41,7 @@ const Profile: React.FC = () => {
             <Mail className="text-zinc-400" size={24} />
           </div>
           <div>
-            <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Email</p>
+            <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Correo Electrónico</p>
             <p className="text-white font-medium">{profile.email}</p>
           </div>
         </div>

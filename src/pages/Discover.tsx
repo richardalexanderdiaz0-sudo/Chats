@@ -56,10 +56,15 @@ const Discover: React.FC = () => {
   }, [user]);
 
   const requestLocation = () => {
+    if (!navigator.geolocation) {
+      alert("La geolocalización no es compatible con tu navegador");
+      return;
+    }
     setLocating(true);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        console.log("Location found:", latitude, longitude);
         setLocation([latitude, longitude]);
         
         if (user) {
@@ -80,8 +85,11 @@ const Discover: React.FC = () => {
       (error) => {
         console.error("Location error", error);
         setLocating(false);
+        if (error.code === 1) {
+          alert("Por favor habilita los permisos de ubicación en tu navegador para usar esta función.");
+        }
       },
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
@@ -166,7 +174,7 @@ const Discover: React.FC = () => {
             <ChangeView center={location} />
             <Marker position={location}>
               <Popup>
-                <div className="text-zinc-950 font-bold">Tú estás aquí</div>
+                <div className="text-zinc-950 font-bold">Estás aquí</div>
               </Popup>
             </Marker>
 
@@ -188,7 +196,7 @@ const Discover: React.FC = () => {
                       className="w-full bg-zinc-950 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors"
                     >
                       <UserPlus size={14} />
-                      Conectar
+                      Chatear
                     </button>
                   </div>
                 </Popup>

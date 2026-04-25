@@ -52,7 +52,7 @@ const Login: React.FC = () => {
       >
         <div className="text-center space-y-2">
           <h2 className="text-4xl font-black tracking-tighter text-white">NEXUS</h2>
-          <p className="text-zinc-500 text-sm">{isRegister ? 'Crea una cuenta para empezar' : 'Bienvenido de nuevo'}</p>
+          <p className="text-zinc-500 text-sm">{isRegister ? 'Crea una cuenta para empezar' : 'Inicia sesión para continuar'}</p>
         </div>
 
         {error && (
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
           className="w-full bg-zinc-800 border border-zinc-700 text-white font-bold py-4 rounded-2xl hover:bg-zinc-700 transition-colors flex items-center justify-center gap-3"
         >
           <Chrome size={20} />
-          Google
+          Continuar con Google
         </button>
 
         <p className="text-center text-sm text-zinc-500">
