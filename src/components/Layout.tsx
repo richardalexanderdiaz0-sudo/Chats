@@ -27,7 +27,7 @@ const Layout: React.FC = () => {
         <button 
           onClick={() => signOut(auth)}
           className="rounded-full p-2 hover:bg-zinc-800 transition-colors"
-          aria-label="Logout"
+          aria-label="Cerrar Sesión"
         >
           <LogOut size={20} className="text-zinc-400" />
         </button>

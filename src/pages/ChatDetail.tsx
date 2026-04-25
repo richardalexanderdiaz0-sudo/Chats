@@ -41,14 +41,20 @@ const ChatDetail: React.FC = () => {
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const msgs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-      setMessages(msgs);
-      setLoading(false);
       
       // Local Notification for new messages from other user
-      const lastMsg = msgs[msgs.length - 1];
-      if (lastMsg && lastMsg.senderId !== user.uid) {
-        showNotification(lastMsg.text);
+      if (msgs.length > messages.length) {
+        const lastMsg = msgs[msgs.length - 1];
+        if (lastMsg && lastMsg.senderId !== user.uid) {
+          showNotification(lastMsg.text);
+        }
       }
+      
+      setMessages(msgs);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error en mensajes:", err);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -87,13 +93,13 @@ const ChatDetail: React.FC = () => {
         createdAt: serverTimestamp()
       });
 
-
       await updateDoc(doc(db, 'chats', chatId), {
         lastMessage: messageText,
         updatedAt: serverTimestamp()
       });
     } catch (e) {
-      console.error("Error sending message", e);
+      console.error("Error al enviar mensaje", e);
+      alert("No se pudo enviar el mensaje. Intenta de nuevo.");
     }
   };
 

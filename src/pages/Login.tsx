@@ -109,12 +109,12 @@ const Login: React.FC = () => {
         </button>
 
         <p className="text-center text-sm text-zinc-500">
-          {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}
+          {isRegister ? '¿Ya tienes una cuenta?' : '¿Aún no tienes cuenta?'}
           <button 
             onClick={() => setIsRegister(!isRegister)} 
             className="ml-2 text-white font-bold hover:underline"
           >
-            {isRegister ? 'Inicia Sesión' : 'Regístrate'}
+            {isRegister ? 'Inicia Sesión' : 'Regístrate Ahora'}
           </button>
         </p>
       </motion.div>

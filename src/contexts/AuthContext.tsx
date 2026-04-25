@@ -18,28 +18,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
       if (currentUser) {
-        // Sync or Create user profile
-        const userDocRef = doc(db, 'users', currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        
-        if (!userDoc.exists()) {
-          const newProfile = {
-            uid: currentUser.uid,
-            email: currentUser.email,
-            displayName: currentUser.displayName || 'Anon',
-            photoURL: currentUser.photoURL || 'https://ui-avatars.com/api/?name=' + (currentUser.displayName || 'A'),
-            createdAt: serverTimestamp(),
-            joinedAt: serverTimestamp(),
-            lastLocation: null
-          };
-          await setDoc(userDocRef, newProfile);
-          setProfile(newProfile);
-        } else {
-          setProfile(userDoc.data());
+        setUser(currentUser);
+        try {
+          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          if (!userDoc.exists()) {
+            const newProfile = {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              displayName: currentUser.displayName || 'Usuario Nexus',
+              photoURL: currentUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.displayName || 'U')}&background=random`,
+              createdAt: serverTimestamp(),
+              joinedAt: serverTimestamp(),
+              lastLocation: null
+            };
+            await setDoc(userDocRef, newProfile);
+            setProfile(newProfile);
+          } else {
+            setProfile(userDoc.data());
+          }
+        } catch (error) {
+          console.error("Error al sincronizar perfil:", error);
         }
       } else {
+        setUser(null);
         setProfile(null);
       }
       setLoading(false);

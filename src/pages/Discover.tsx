@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, setDoc, getDocs, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, setDoc, getDoc, getDocs, where } from 'firebase/firestore';
 import { useAuth } from '../contexts/AuthContext';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { calculateDistance } from '../lib/utils';
-import { UserPlus, Navigation, Loader2 } from 'lucide-react';
+import { UserPlus, Navigation, Loader2, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 
@@ -49,6 +49,9 @@ const Discover: React.FC = () => {
         .map(doc => doc.data())
         .filter(u => u.uid !== user?.uid);
       setUsers(usersData);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error cargando usuarios:", err);
       setLoading(false);
     });
 
@@ -99,26 +102,27 @@ const Discover: React.FC = () => {
 
   const handleStartChat = async (otherUser: any) => {
     if (!user) return;
-    
-    const chatId = [user.uid, otherUser.uid].sort().join('_');
-    const chatDocRef = doc(db, 'chats', chatId);
-    
-    // Check if chat already exists
-    const chatSnap = await getDocs(query(collection(db, 'chats'), where('participants', 'array-contains', user.uid)));
-    const existingChat = chatSnap.docs.find(doc => {
-      const data = doc.data();
-      return data.participants.includes(otherUser.uid);
-    });
+    setLoading(true);
+    try {
+      const chatId = [user.uid, otherUser.uid].sort().join('_');
+      const chatDocRef = doc(db, 'chats', chatId);
+      const chatSnap = await getDoc(chatDocRef);
 
-    if (!existingChat) {
-      await setDoc(chatDocRef, {
-        participants: [user.uid, otherUser.uid],
-        updatedAt: serverTimestamp(),
-        lastMessage: 'Chat iniciado'
-      });
+      if (!chatSnap.exists()) {
+        await setDoc(chatDocRef, {
+          participants: [user.uid, otherUser.uid],
+          updatedAt: serverTimestamp(),
+          lastMessage: '¡Nuevo chat iniciado!'
+        });
+      }
+      
+      navigate(`/chats/${chatId}`);
+    } catch (err) {
+      console.error("Error al iniciar chat:", err);
+      alert("No se pudo iniciar el chat. Por favor intenta de nuevo.");
+    } finally {
+      setLoading(false);
     }
-    
-    navigate(`/chats/${chatId}`);
   };
 
   if (loading) {
@@ -248,5 +252,4 @@ const Discover: React.FC = () => {
   );
 };
 
-import { MapPin } from 'lucide-react';
 export default Discover;

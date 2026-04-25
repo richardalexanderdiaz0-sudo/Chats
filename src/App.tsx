@@ -25,6 +25,7 @@ export default function App() {
             <Route path="discover" element={<Discover />} />
             <Route path="profile" element={<Profile />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
