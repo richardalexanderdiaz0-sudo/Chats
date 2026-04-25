@@ -137,7 +137,7 @@ const Discover: React.FC = () => {
   return (
     <div className="h-full flex flex-col">
       <div className="px-6 py-4 flex justify-between items-center">
-        <h2 className="text-xl font-black text-white">CONOCE</h2>
+        <h2 className="text-xl font-black text-white uppercase italic">Conoce</h2>
         <button 
           onClick={requestLocation}
           disabled={locating}

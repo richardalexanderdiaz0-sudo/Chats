@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
   return (
     <div className="flex h-screen flex-col bg-zinc-950 text-zinc-100 font-sans">
       <header className="flex items-center justify-between border-b border-zinc-800 px-6 py-4 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-50">
-        <h1 className="text-xl font-bold tracking-tighter text-white">NEXUS</h1>
+        <h1 className="text-xl font-bold tracking-tighter text-white">Your chats</h1>
         <button 
           onClick={() => signOut(auth)}
           className="rounded-full p-2 hover:bg-zinc-800 transition-colors"

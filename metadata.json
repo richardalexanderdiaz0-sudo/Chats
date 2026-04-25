@@ -1,6 +1,6 @@
 {
-  "name": "NEXUS",
-  "description": "A real-time messaging PWA with location-based discovery and social features.",
+  "name": "Your chats",
+  "description": "Una aplicación de mensajería en tiempo real con geolocalización.",
   "requestFramePermissions": ["geolocation"],
   "majorCapabilities": []
 }

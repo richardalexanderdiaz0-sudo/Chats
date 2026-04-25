@@ -57,7 +57,7 @@ const Chats: React.FC = () => {
   return (
     <div className="p-6 h-full">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-black text-white">CHATS</h2>
+        <h2 className="text-3xl font-black text-white uppercase italic">Chats</h2>
         <div className="bg-zinc-900 p-2 rounded-full">
           <Search size={20} className="text-zinc-500" />
         </div>

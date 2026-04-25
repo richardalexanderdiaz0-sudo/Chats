@@ -1,8 +1,8 @@
 {
-  "name": "NEXUS Messaging",
-  "short_name": "NEXUS",
-  "description": "Real-time location-based messaging",
-  "start_url": "./index.html",
+  "name": "Your chats",
+  "short_name": "Your chats",
+  "description": "Mensajería en tiempo real basada en ubicación",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#09090b",
   "theme_color": "#09090b",
@@ -10,8 +10,7 @@
     {
       "src": "https://cdn-icons-png.flaticon.com/512/3661/3661331.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }

@@ -51,7 +51,7 @@ const Login: React.FC = () => {
         className="w-full max-w-md space-y-8 bg-zinc-900/50 p-8 rounded-3xl border border-zinc-800 backdrop-blur-sm"
       >
         <div className="text-center space-y-2">
-          <h2 className="text-4xl font-black tracking-tighter text-white">NEXUS</h2>
+          <h2 className="text-4xl font-black tracking-tighter text-white uppercase italic">Your chats</h2>
           <p className="text-zinc-500 text-sm">{isRegister ? 'Crea una cuenta para empezar' : 'Inicia sesión para continuar'}</p>
         </div>
 

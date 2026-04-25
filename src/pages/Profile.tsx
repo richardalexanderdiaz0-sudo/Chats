@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
 
       <div className="pt-4">
         <p className="text-center text-zinc-600 text-xs font-medium">
-          NEXUS Protocol v1.0.4 • Datos cifrados
+          YOUR CHATS Protocol v1.0.5 • Datos cifrados
         </p>
       </div>
     </div>
